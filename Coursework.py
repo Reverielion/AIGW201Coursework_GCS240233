@@ -6,6 +6,7 @@ import function_library as fl
 import pandas as pd
 from PredictForest import PredictForest
 from PCAGMMClustering import PCAGMM
+from NaiveBayesClass import NaiveBayesClass
 from PIL import ImageTk, Image
 
 class FairyTheSupremeAssistant:
@@ -17,7 +18,7 @@ class FairyTheSupremeAssistant:
         self.window.configure(bg="#27272A")
         self.modelquickbutdumb = lms.llm("llama-3.2-1b-instruct")
         self.modelsmartbutslow = lms.llm("openai/gpt-oss-20b")
-        self.chat = lms.Chat("You are a task focused AI assistant working for a manager, if asked to open an application, asked to do data analysis, classification, or prediction, say Sure Thing!")
+        self.chat = lms.Chat("You are a task focused AI assistant working for a manager, if asked to open zalo or notepad, say Sure Thing!")
         self.window.grid_rowconfigure(0, weight=1)
         self.window.grid_rowconfigure(1, weight=1)
         self.window.grid_rowconfigure(2, weight=1)
@@ -25,8 +26,10 @@ class FairyTheSupremeAssistant:
         self.window.grid_columnconfigure(1, weight=1)
         self.window.grid_columnconfigure(2, weight=1)
         self.window.grid_columnconfigure(3, weight=1)
+        self.window.grid_columnconfigure(4, weight=1)
         self.prompt = ""
         self.predator = PredictForest()
+        self.naivebayes = None
 
         self.create_layout()
         self.window.mainloop()
@@ -46,23 +49,45 @@ class FairyTheSupremeAssistant:
         self.othersubmitbutton = tk.Button(self.window, height=2, width=20, text="Data Analysis Submit", command=self.data_analysis_path)
         self.othersubmitbutton.grid(row=1, column=1)
 
-        self.predicttrain = tk.Button(self.window, height=2, width=20, text="Train on dataset", command=self.predict_train)
+        self.predicttrain = tk.Button(self.window, height=2, width=20, text="Train on dataset(Numerical)", command=self.predict_train)
         self.predicttrain.grid(row=1, column=2)
 
-        self.predictinput = tk.Button(self.window, height=2, width=20, text="Predict", command=self.predictmanual)
+        self.predictinput = tk.Button(self.window, height=2, width=20, text="Predict(Numerical)", command=self.predictmanual)
         self.predictinput.grid(row=1, column=3)
 
         self.clusteringbutton = tk.Button(self.window, height=2, width=20, text="Clustering", command=self.clusterringset)
+        self.clusteringbutton.grid(row=2, column=4)
+
+        self.clusteringbutton = tk.Button(self.window, height=2, width=20, text="Train on dataset(Categorical)", command=self.categoricaltrain)
         self.clusteringbutton.grid(row=2, column=2)
+
+        self.clusteringbutton = tk.Button(self.window, height=2, width=20, text="Predict(Categorical)", command=self.categoricalpredict)
+        self.clusteringbutton.grid(row=2, column=3)
 
         self.image_slot = tk.Label(self.window, bg="#27272A")
         self.image_slot.grid(row=0, column=1, columnspan=2)
+
+    def categoricalpredict(self):
+        prompt = self.prompt_entry.get("1.0", tk.END).strip()
+        result, prolly = self.naivebayes.predict(prompt)
+        self.output.config(state="normal")
+        self.output.insert(tk.END, str(result))
+        self.output.insert(tk.END, f"\nProbabilities:\n{str(prolly)}\n")
+        self.output.configure(state="disabled")
+
+    def categoricaltrain(self):
+        prompt = self.prompt_entry.get("1.0", tk.END).strip()
+        self.naivebayes = NaiveBayesClass(prompt)
+        self.output.config(state="normal")
+        self.output.insert(tk.END, "Training completed. Ready to predict\n")
+        self.output.configure(state="disabled")
 
     def predictmanual(self):
         prompt = self.prompt_entry.get("1.0", tk.END).strip()
         self.predictresult = self.predator.manual_predict_input(prompt)
         self.output.config(state="normal")
         self.output.insert(tk.END, str(self.predictresult))
+        self.output.insert(tk.END, "\n")
         self.output.configure(state="disabled")
 
     def predict_train(self):
@@ -94,7 +119,7 @@ class FairyTheSupremeAssistant:
         print(prompt)
         with open(prompt, "r") as file:
             content = file.read()
-        self.chat.add_user_message("Perform general data analysis: Average, Highest and lowest Score for each columm")
+        self.chat.add_user_message("Perform general data analysis: What it is, Average, Highest and lowest Score for each columm")
         result = self.modelquickbutdumb.respond(content)
         self.output.config(state="normal")
         self.output.insert(tk.END, result)
