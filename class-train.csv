@@ -1,0 +1,10 @@
+sex,education,married,money
+male,yes,yes,yes
+male,no,yes,yes
+male,no,yes,no
+male,no,no,no
+female,yes,yes,yes
+female,yes,yes,no
+female,yes,no,yes
+female,yes,no,no
+female,no,yes,no
