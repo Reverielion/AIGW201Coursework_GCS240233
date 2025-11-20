@@ -44,11 +44,6 @@ class NaiveBayesClass:
         probs_df = pd.DataFrame(probs, columns=prob_columns)
         return preds, probs_df
 
-
-
-# ------------------------
-# Usage
-# ------------------------
 if __name__ == "__main__":
     data = pd.read_csv(r"C:\Users\Asus\Documents\Coursework_IntroAI\class-train.csv")
     model = NaiveBayesClass(data)
@@ -57,4 +52,5 @@ if __name__ == "__main__":
     preds = model.predict(samples)
     print("Predictions:\n", preds)
     #print("\nProbabilities:\n", probs)
+
 
